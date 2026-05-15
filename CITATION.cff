@@ -1,0 +1,42 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite both the article and the archived release."
+title: "Data-Centric Trust Pipeline: Reference Implementation"
+type: software
+authors:
+  - family-names: "Cavalcanti Pereira"
+    given-names: "Carlos Diego"
+    affiliation: "Sloan School of Management, Massachusetts Institute of Technology; CESAR School (Recife Center for Advanced Studies and Systems)"
+    email: "cdiego@mit.edu"
+    orcid: "https://orcid.org/0000-0000-0000-0000"  # TODO: replace with actual ORCID
+abstract: >-
+  Reference implementation of the Data-Centric Trust Pipeline — a four-layer
+  governance framework (Integrity, Fairness, Synthesis, Provenance) for
+  trustworthy AI in sensitive domains. Includes empirical validation on the
+  Adult Census Income and ProPublica COMPAS datasets, the four-protocol
+  validation structure for synthetic data (P1 distributional invariance,
+  P2 fairness delta, P3 cryptographic provenance, P4 domain plausibility),
+  and a decision-level provenance graph with auditable rationale records.
+keywords:
+  - trustworthy AI
+  - data governance
+  - algorithmic fairness
+  - synthetic data
+  - data provenance
+  - accountability
+  - data-centric AI
+license: MIT
+repository-code: "https://github.com/cdiegocom/dctp"
+url: "https://github.com/cdiegocom/dctp"
+version: "1.0.0"
+date-released: "2026-05-14"
+preferred-citation:
+  type: article
+  authors:
+    - family-names: "Cavalcanti Pereira"
+      given-names: "Carlos Diego"
+      affiliation: "Sloan School of Management, Massachusetts Institute of Technology"
+      email: "cdiego@mit.edu"
+  title: "A Data-Centric Trust Pipeline: An Empirical Framework for Trustworthy AI in Sensitive Domains"
+  year: 2026
+  journal: "Patterns"
+  status: "submitted"

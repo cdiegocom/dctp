@@ -1,0 +1,116 @@
+{
+  "seeds": [
+    13,
+    42,
+    137
+  ],
+  "n_seeds": 3,
+  "aggregate": [
+    {
+      "dataset": "adult",
+      "attribute": "race",
+      "n_seeds": 3,
+      "baseline_eo_mean": 0.1988,
+      "baseline_eo_std": 0.0237,
+      "pre_rollback_eo_mean": 0.3192,
+      "pre_rollback_eo_std": 0.018,
+      "p2_delta_mean": -0.1204,
+      "p2_delta_std": 0.0228,
+      "p2_delta_min": -0.1467,
+      "p2_delta_max": -0.1066,
+      "rollback_rate": 1.0,
+      "n_synthesis_mean": 3666.0,
+      "provenance_nodes_mean": 14.6667
+    },
+    {
+      "dataset": "adult",
+      "attribute": "sex",
+      "n_seeds": 3,
+      "baseline_eo_mean": 0.0515,
+      "baseline_eo_std": 0.005,
+      "pre_rollback_eo_mean": 0.0818,
+      "pre_rollback_eo_std": 0.0152,
+      "p2_delta_mean": -0.0303,
+      "p2_delta_std": 0.0102,
+      "p2_delta_min": -0.0413,
+      "p2_delta_max": -0.021,
+      "rollback_rate": 1.0,
+      "n_synthesis_mean": 3666.0,
+      "provenance_nodes_mean": 14.6667
+    },
+    {
+      "dataset": "compas",
+      "attribute": "race",
+      "n_seeds": 3,
+      "baseline_eo_mean": 0.33,
+      "baseline_eo_std": 0.0203,
+      "pre_rollback_eo_mean": 0.3137,
+      "pre_rollback_eo_std": 0.0064,
+      "p2_delta_mean": 0.0162,
+      "p2_delta_std": 0.0144,
+      "p2_delta_min": 0.0012,
+      "p2_delta_max": 0.0298,
+      "rollback_rate": 1.0,
+      "n_synthesis_mean": 1671.0,
+      "provenance_nodes_mean": 13.3333
+    },
+    {
+      "dataset": "compas",
+      "attribute": "sex",
+      "n_seeds": 3,
+      "baseline_eo_mean": 0.0988,
+      "baseline_eo_std": 0.0014,
+      "pre_rollback_eo_mean": 0.1331,
+      "pre_rollback_eo_std": 0.0286,
+      "p2_delta_mean": -0.0343,
+      "p2_delta_std": 0.0273,
+      "p2_delta_min": -0.0658,
+      "p2_delta_max": -0.0172,
+      "rollback_rate": 1.0,
+      "n_synthesis_mean": 1671.0,
+      "provenance_nodes_mean": 13.3333
+    }
+  ],
+  "robustness": {
+    "adult_race": {
+      "n_seeds": 3,
+      "p2_delta_negative_count": 3,
+      "p2_delta_values": [
+        -0.1078397673188788,
+        -0.1065668202764976,
+        -0.1467301251542395
+      ],
+      "rollback_count": 3
+    },
+    "adult_sex": {
+      "n_seeds": 3,
+      "p2_delta_negative_count": 3,
+      "p2_delta_values": [
+        -0.0412853079335736,
+        -0.0286382771251598,
+        -0.0210109989258259
+      ],
+      "rollback_count": 3
+    },
+    "compas_race": {
+      "n_seeds": 3,
+      "p2_delta_negative_count": 0,
+      "p2_delta_values": [
+        0.0297851234094052,
+        0.0011929524730433,
+        0.0177251314233862
+      ],
+      "rollback_count": 3
+    },
+    "compas_sex": {
+      "n_seeds": 3,
+      "p2_delta_negative_count": 3,
+      "p2_delta_values": [
+        -0.0199429627920574,
+        -0.0171799790409058,
+        -0.0658027448400793
+      ],
+      "rollback_count": 3
+    }
+  }
+}

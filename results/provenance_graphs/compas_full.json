@@ -1,0 +1,807 @@
+{
+  "run_id": "compas_full-1778795133790580000",
+  "created_at": "2026-05-14T21:45:33.790993+00:00",
+  "evaluation": {
+    "lineage_completeness": 1.0,
+    "decision_coverage": 1.0,
+    "max_traceability_depth": 9,
+    "orphan_nodes": 0,
+    "total_nodes": 14,
+    "escalation_count": 1,
+    "authorization_count": 2
+  },
+  "nodes": [
+    {
+      "node_id": "ingestion-741bff26",
+      "event_type": "INGESTION",
+      "timestamp": "2026-05-14T21:45:33.791050+00:00",
+      "layer_origin": "EXTERNAL",
+      "actor_id": "external_data_source",
+      "input_refs": [],
+      "output_refs": [],
+      "decision_rationale": "Initial ingestion of compas_full: 6130 records.",
+      "flags": [],
+      "schema_version": "1.0",
+      "generation_params": null,
+      "validation_results": null,
+      "metrics": {
+        "n_records": 6130,
+        "n_columns": 11
+      }
+    },
+    {
+      "node_id": "validation-ef279e01",
+      "event_type": "VALIDATION",
+      "timestamp": "2026-05-14T21:45:33.807354+00:00",
+      "layer_origin": "INTEGRITY",
+      "actor_id": "data_steward",
+      "input_refs": [
+        "ingestion-741bff26"
+      ],
+      "output_refs": [],
+      "decision_rationale": "Structural+semantic validation on 6130 records. Quarantined 0 records (0.0%).",
+      "flags": [],
+      "schema_version": "1.0",
+      "generation_params": null,
+      "validation_results": null,
+      "metrics": {
+        "n_input": 6130,
+        "n_validated": 6130,
+        "n_quarantined": 0,
+        "structural_completeness": 1.0,
+        "semantic_consistency": 1.0,
+        "demographic_coverage": {
+          "race": {
+            "Other": {
+              "n_full": 343,
+              "n_quarantined": 0,
+              "exclusion_rate": 0.0
+            },
+            "African-American": {
+              "n_full": 3175,
+              "n_quarantined": 0,
+              "exclusion_rate": 0.0
+            },
+            "Caucasian": {
+              "n_full": 2103,
+              "n_quarantined": 0,
+              "exclusion_rate": 0.0
+            },
+            "Hispanic": {
+              "n_full": 509,
+              "n_quarantined": 0,
+              "exclusion_rate": 0.0
+            }
+          },
+          "sex": {
+            "Male": {
+              "n_full": 4959,
+              "n_quarantined": 0,
+              "exclusion_rate": 0.0
+            },
+            "Female": {
+              "n_full": 1171,
+              "n_quarantined": 0,
+              "exclusion_rate": 0.0
+            }
+          }
+        }
+      }
+    },
+    {
+      "node_id": "fairness_audit-ed4ec8ca",
+      "event_type": "FAIRNESS_AUDIT",
+      "timestamp": "2026-05-14T21:46:07.913008+00:00",
+      "layer_origin": "FAIRNESS",
+      "actor_id": "fairness_analyst",
+      "input_refs": [
+        "validation-ef279e01"
+      ],
+      "output_refs": [],
+      "decision_rationale": "Fairness audit on 6130 records. Identified 4 groups requiring rebalancing (EO gap > 0.1).",
+      "flags": [
+        {
+          "type": "FAIRNESS_DISPARITY",
+          "attribute": "race",
+          "group": "Caucasian",
+          "metric": "equal_opportunity",
+          "gap": 0.2203,
+          "severity": "high"
+        },
+        {
+          "type": "FAIRNESS_DISPARITY",
+          "attribute": "race",
+          "group": "Hispanic",
+          "metric": "equal_opportunity",
+          "gap": 0.2729,
+          "severity": "high"
+        },
+        {
+          "type": "FAIRNESS_DISPARITY",
+          "attribute": "race",
+          "group": "Other",
+          "metric": "equal_opportunity",
+          "gap": 0.335,
+          "severity": "high"
+        },
+        {
+          "type": "FAIRNESS_DISPARITY",
+          "attribute": "sex",
+          "group": "Female",
+          "metric": "equal_opportunity",
+          "gap": 0.1003,
+          "severity": "high"
+        }
+      ],
+      "schema_version": "1.0",
+      "generation_params": null,
+      "validation_results": null,
+      "metrics": {
+        "demographic_parity_gap": {
+          "race": 0.318,
+          "sex": 0.1264
+        },
+        "equal_opportunity_gap": {
+          "race": 0.335,
+          "sex": 0.1003
+        },
+        "counterfactual_fairness": {
+          "race": 0.0622,
+          "sex": 0.0513
+        },
+        "overall_accuracy": 0.756,
+        "per_group_metrics": {
+          "race": {
+            "demographic_parity": {
+              "African-American": 0.5046,
+              "Caucasian": 0.2725,
+              "Hispanic": 0.2574,
+              "Other": 0.1866
+            },
+            "equal_opportunity": {
+              "African-American": 0.7544,
+              "Caucasian": 0.5341,
+              "Hispanic": 0.4815,
+              "Other": 0.4194
+            }
+          },
+          "sex": {
+            "demographic_parity": {
+              "Female": 0.2844,
+              "Male": 0.4108
+            },
+            "equal_opportunity": {
+              "Female": 0.5707,
+              "Male": 0.671
+            }
+          }
+        },
+        "rebalancing_targets": [
+          {
+            "attribute": "race",
+            "group": "Caucasian",
+            "current_tpr": 0.5341,
+            "reference_tpr": 0.7544,
+            "gap": 0.2203,
+            "n_records": 2103
+          },
+          {
+            "attribute": "race",
+            "group": "Hispanic",
+            "current_tpr": 0.4815,
+            "reference_tpr": 0.7544,
+            "gap": 0.2729,
+            "n_records": 509
+          },
+          {
+            "attribute": "race",
+            "group": "Other",
+            "current_tpr": 0.4194,
+            "reference_tpr": 0.7544,
+            "gap": 0.335,
+            "n_records": 343
+          },
+          {
+            "attribute": "sex",
+            "group": "Female",
+            "current_tpr": 0.5707,
+            "reference_tpr": 0.671,
+            "gap": 0.1003,
+            "n_records": 1171
+          }
+        ]
+      }
+    },
+    {
+      "node_id": "authorization-c453364e",
+      "event_type": "AUTHORIZATION",
+      "timestamp": "2026-05-14T21:46:07.913321+00:00",
+      "layer_origin": "PROVENANCE",
+      "actor_id": "governance_officer",
+      "input_refs": [
+        "fairness_audit-ed4ec8ca",
+        "validation-ef279e01"
+      ],
+      "output_refs": [],
+      "decision_rationale": "Approved synthetic augmentation for 4 underrepresented groups. Synthesis Layer authorized to proceed with P1-P4 protocols.",
+      "flags": [],
+      "schema_version": "1.0",
+      "generation_params": null,
+      "validation_results": null,
+      "metrics": {}
+    },
+    {
+      "node_id": "synthesis-ab90db3d",
+      "event_type": "SYNTHESIS",
+      "timestamp": "2026-05-14T21:46:08.864940+00:00",
+      "layer_origin": "SYNTHESIS",
+      "actor_id": "data_scientist",
+      "input_refs": [
+        "authorization-c453364e"
+      ],
+      "output_refs": [],
+      "decision_rationale": "Generated 1051 synthetic records for race=Caucasian to address fairness disparity.",
+      "flags": [],
+      "schema_version": "1.0",
+      "generation_params": {
+        "model": "GaussianCopulaSynthesizer",
+        "library": "sdv",
+        "n_source": 2103,
+        "n_columns": 11,
+        "random_state": 42,
+        "privacy_epsilon": 2.0,
+        "fit_time_iso": "2026-05-14T21:46:08.771103+00:00",
+        "batch_id": "batch-423c6724",
+        "model_id": "GaussianCopula-42"
+      },
+      "validation_results": {
+        "P1_js_divergence": 0.0031,
+        "P1_threshold": 0.1,
+        "P1_passed": true,
+        "P3_verification_rate": 1.0,
+        "P4_plausibility_pass_rate": 1.0,
+        "n_accepted": 1051,
+        "n_quarantined": 0
+      },
+      "metrics": {}
+    },
+    {
+      "node_id": "synthesis-16ecaa7e",
+      "event_type": "SYNTHESIS",
+      "timestamp": "2026-05-14T21:46:09.468416+00:00",
+      "layer_origin": "SYNTHESIS",
+      "actor_id": "data_scientist",
+      "input_refs": [
+        "authorization-c453364e"
+      ],
+      "output_refs": [],
+      "decision_rationale": "Generated 254 synthetic records for race=Hispanic to address fairness disparity.",
+      "flags": [],
+      "schema_version": "1.0",
+      "generation_params": {
+        "model": "GaussianCopulaSynthesizer",
+        "library": "sdv",
+        "n_source": 509,
+        "n_columns": 11,
+        "random_state": 42,
+        "privacy_epsilon": 2.0,
+        "fit_time_iso": "2026-05-14T21:46:09.407355+00:00",
+        "batch_id": "batch-94246437",
+        "model_id": "GaussianCopula-42"
+      },
+      "validation_results": {
+        "P1_js_divergence": 0.0174,
+        "P1_threshold": 0.1,
+        "P1_passed": true,
+        "P3_verification_rate": 1.0,
+        "P4_plausibility_pass_rate": 1.0,
+        "n_accepted": 254,
+        "n_quarantined": 0
+      },
+      "metrics": {}
+    },
+    {
+      "node_id": "synthesis-b5dd2c83",
+      "event_type": "SYNTHESIS",
+      "timestamp": "2026-05-14T21:46:09.964393+00:00",
+      "layer_origin": "SYNTHESIS",
+      "actor_id": "data_scientist",
+      "input_refs": [
+        "authorization-c453364e"
+      ],
+      "output_refs": [],
+      "decision_rationale": "Generated 171 synthetic records for race=Other to address fairness disparity.",
+      "flags": [],
+      "schema_version": "1.0",
+      "generation_params": {
+        "model": "GaussianCopulaSynthesizer",
+        "library": "sdv",
+        "n_source": 343,
+        "n_columns": 11,
+        "random_state": 42,
+        "privacy_epsilon": 2.0,
+        "fit_time_iso": "2026-05-14T21:46:09.907301+00:00",
+        "batch_id": "batch-41a5c8b5",
+        "model_id": "GaussianCopula-42"
+      },
+      "validation_results": {
+        "P1_js_divergence": 0.0117,
+        "P1_threshold": 0.1,
+        "P1_passed": true,
+        "P3_verification_rate": 1.0,
+        "P4_plausibility_pass_rate": 1.0,
+        "n_accepted": 171,
+        "n_quarantined": 0
+      },
+      "metrics": {}
+    },
+    {
+      "node_id": "synthesis-cb369aec",
+      "event_type": "SYNTHESIS",
+      "timestamp": "2026-05-14T21:46:10.699726+00:00",
+      "layer_origin": "SYNTHESIS",
+      "actor_id": "data_scientist",
+      "input_refs": [
+        "authorization-c453364e"
+      ],
+      "output_refs": [],
+      "decision_rationale": "Generated 585 synthetic records for sex=Female to address fairness disparity.",
+      "flags": [],
+      "schema_version": "1.0",
+      "generation_params": {
+        "model": "GaussianCopulaSynthesizer",
+        "library": "sdv",
+        "n_source": 1171,
+        "n_columns": 11,
+        "random_state": 42,
+        "privacy_epsilon": 2.0,
+        "fit_time_iso": "2026-05-14T21:46:10.629332+00:00",
+        "batch_id": "batch-50acc735",
+        "model_id": "GaussianCopula-42"
+      },
+      "validation_results": {
+        "P1_js_divergence": 0.0035,
+        "P1_threshold": 0.1,
+        "P1_passed": true,
+        "P3_verification_rate": 1.0,
+        "P4_plausibility_pass_rate": 1.0,
+        "n_accepted": 585,
+        "n_quarantined": 0
+      },
+      "metrics": {}
+    },
+    {
+      "node_id": "validation-4db5a802",
+      "event_type": "VALIDATION",
+      "timestamp": "2026-05-14T21:46:10.720676+00:00",
+      "layer_origin": "INTEGRITY",
+      "actor_id": "data_steward",
+      "input_refs": [
+        "authorization-c453364e"
+      ],
+      "output_refs": [],
+      "decision_rationale": "Structural+semantic validation on 8191 records. Quarantined 0 records (0.0%).",
+      "flags": [],
+      "schema_version": "1.0",
+      "generation_params": null,
+      "validation_results": null,
+      "metrics": {
+        "n_input": 8191,
+        "n_validated": 8191,
+        "n_quarantined": 0,
+        "structural_completeness": 1.0,
+        "semantic_consistency": 1.0,
+        "demographic_coverage": {
+          "race": {
+            "Other": {
+              "n_full": 542,
+              "n_quarantined": 0,
+              "exclusion_rate": 0.0
+            },
+            "African-American": {
+              "n_full": 3453,
+              "n_quarantined": 0,
+              "exclusion_rate": 0.0
+            },
+            "Caucasian": {
+              "n_full": 3384,
+              "n_quarantined": 0,
+              "exclusion_rate": 0.0
+            },
+            "Hispanic": {
+              "n_full": 812,
+              "n_quarantined": 0,
+              "exclusion_rate": 0.0
+            }
+          },
+          "sex": {
+            "Male": {
+              "n_full": 6104,
+              "n_quarantined": 0,
+              "exclusion_rate": 0.0
+            },
+            "Female": {
+              "n_full": 2087,
+              "n_quarantined": 0,
+              "exclusion_rate": 0.0
+            }
+          }
+        }
+      }
+    },
+    {
+      "node_id": "fairness_audit-b01f461c",
+      "event_type": "FAIRNESS_AUDIT",
+      "timestamp": "2026-05-14T21:46:45.949758+00:00",
+      "layer_origin": "FAIRNESS",
+      "actor_id": "fairness_analyst",
+      "input_refs": [
+        "validation-4db5a802"
+      ],
+      "output_refs": [],
+      "decision_rationale": "Fairness audit on 8191 records. Identified 4 groups requiring rebalancing (EO gap > 0.1).",
+      "flags": [
+        {
+          "type": "FAIRNESS_DISPARITY",
+          "attribute": "race",
+          "group": "Caucasian",
+          "metric": "equal_opportunity",
+          "gap": 0.273,
+          "severity": "high"
+        },
+        {
+          "type": "FAIRNESS_DISPARITY",
+          "attribute": "race",
+          "group": "Hispanic",
+          "metric": "equal_opportunity",
+          "gap": 0.1998,
+          "severity": "high"
+        },
+        {
+          "type": "FAIRNESS_DISPARITY",
+          "attribute": "race",
+          "group": "Other",
+          "metric": "equal_opportunity",
+          "gap": 0.3173,
+          "severity": "high"
+        },
+        {
+          "type": "FAIRNESS_DISPARITY",
+          "attribute": "sex",
+          "group": "Female",
+          "metric": "equal_opportunity",
+          "gap": 0.1661,
+          "severity": "high"
+        }
+      ],
+      "schema_version": "1.0",
+      "generation_params": null,
+      "validation_results": null,
+      "metrics": {
+        "demographic_parity_gap": {
+          "race": 0.2659,
+          "sex": 0.1371
+        },
+        "equal_opportunity_gap": {
+          "race": 0.3173,
+          "sex": 0.1661
+        },
+        "counterfactual_fairness": {
+          "race": 0.0509,
+          "sex": 0.0451
+        },
+        "overall_accuracy": 0.7298,
+        "per_group_metrics": {
+          "race": {
+            "demographic_parity": {
+              "African-American": 0.4634,
+              "Caucasian": 0.2255,
+              "Hispanic": 0.2796,
+              "Other": 0.1974
+            },
+            "equal_opportunity": {
+              "African-American": 0.7031,
+              "Caucasian": 0.4301,
+              "Hispanic": 0.5033,
+              "Other": 0.3858
+            }
+          },
+          "sex": {
+            "demographic_parity": {
+              "Female": 0.2271,
+              "Male": 0.3642
+            },
+            "equal_opportunity": {
+              "Female": 0.4358,
+              "Male": 0.6019
+            }
+          }
+        },
+        "rebalancing_targets": [
+          {
+            "attribute": "race",
+            "group": "Caucasian",
+            "current_tpr": 0.4301,
+            "reference_tpr": 0.7031,
+            "gap": 0.273,
+            "n_records": 3384
+          },
+          {
+            "attribute": "race",
+            "group": "Hispanic",
+            "current_tpr": 0.5033,
+            "reference_tpr": 0.7031,
+            "gap": 0.1998,
+            "n_records": 812
+          },
+          {
+            "attribute": "race",
+            "group": "Other",
+            "current_tpr": 0.3858,
+            "reference_tpr": 0.7031,
+            "gap": 0.3173,
+            "n_records": 542
+          },
+          {
+            "attribute": "sex",
+            "group": "Female",
+            "current_tpr": 0.4358,
+            "reference_tpr": 0.6019,
+            "gap": 0.1661,
+            "n_records": 2087
+          }
+        ]
+      }
+    },
+    {
+      "node_id": "validation-d9e8ab78",
+      "event_type": "VALIDATION",
+      "timestamp": "2026-05-14T21:46:45.950050+00:00",
+      "layer_origin": "SYNTHESIS",
+      "actor_id": "data_scientist",
+      "input_refs": [
+        "fairness_audit-b01f461c"
+      ],
+      "output_refs": [],
+      "decision_rationale": "P2 fairness delta audit: race=+0.0177, sex=-0.0658",
+      "flags": [],
+      "schema_version": "1.0",
+      "generation_params": null,
+      "validation_results": {
+        "P2_deltas": {
+          "race": 0.017725131423386276,
+          "sex": -0.06580274484007936
+        }
+      },
+      "metrics": {
+        "P2_deltas": {
+          "race": 0.017725131423386276,
+          "sex": -0.06580274484007936
+        }
+      }
+    },
+    {
+      "node_id": "escalation-fd0b8864",
+      "event_type": "ESCALATION",
+      "timestamp": "2026-05-14T21:46:45.950098+00:00",
+      "layer_origin": "SYNTHESIS",
+      "actor_id": "data_scientist",
+      "input_refs": [
+        "validation-d9e8ab78"
+      ],
+      "output_refs": [],
+      "decision_rationale": "Fairness-Synthesis conflict detected: P2 audit reveals NEGATIVE fairness delta on attribute(s) ['sex'] despite passing P1. Synthesis batches augmented metrics on P1 (fidelity) but worsened the disparity metric P2 tracks. Escalating to Governance Officer for rollback decision.",
+      "flags": [
+        {
+          "type": "P2_REGRESSION",
+          "attribute": "sex",
+          "delta": -0.0658,
+          "severity": "high"
+        }
+      ],
+      "schema_version": "1.0",
+      "generation_params": null,
+      "validation_results": null,
+      "metrics": {}
+    },
+    {
+      "node_id": "authorization-9b958a3a",
+      "event_type": "AUTHORIZATION",
+      "timestamp": "2026-05-14T21:46:45.950137+00:00",
+      "layer_origin": "PROVENANCE",
+      "actor_id": "governance_officer",
+      "input_refs": [
+        "escalation-fd0b8864"
+      ],
+      "output_refs": [],
+      "decision_rationale": "Approved rollback: synthesis batches quarantined; training corpus reverts to the initial validated corpus. Rationale: P2 regression on ['sex'] indicates that the naive distributional synthesis reproduced rather than corrected the attribute-target disparity. Documented for regulatory audit per DP4.",
+      "flags": [],
+      "schema_version": "1.0",
+      "generation_params": null,
+      "validation_results": null,
+      "metrics": {}
+    },
+    {
+      "node_id": "fairness_audit-cd3ca5ee",
+      "event_type": "FAIRNESS_AUDIT",
+      "timestamp": "2026-05-14T21:47:19.676525+00:00",
+      "layer_origin": "FAIRNESS",
+      "actor_id": "fairness_analyst",
+      "input_refs": [
+        "authorization-9b958a3a"
+      ],
+      "output_refs": [],
+      "decision_rationale": "Fairness audit on 6130 records. Identified 4 groups requiring rebalancing (EO gap > 0.1).",
+      "flags": [
+        {
+          "type": "FAIRNESS_DISPARITY",
+          "attribute": "race",
+          "group": "Caucasian",
+          "metric": "equal_opportunity",
+          "gap": 0.2203,
+          "severity": "high"
+        },
+        {
+          "type": "FAIRNESS_DISPARITY",
+          "attribute": "race",
+          "group": "Hispanic",
+          "metric": "equal_opportunity",
+          "gap": 0.2729,
+          "severity": "high"
+        },
+        {
+          "type": "FAIRNESS_DISPARITY",
+          "attribute": "race",
+          "group": "Other",
+          "metric": "equal_opportunity",
+          "gap": 0.335,
+          "severity": "high"
+        },
+        {
+          "type": "FAIRNESS_DISPARITY",
+          "attribute": "sex",
+          "group": "Female",
+          "metric": "equal_opportunity",
+          "gap": 0.1003,
+          "severity": "high"
+        }
+      ],
+      "schema_version": "1.0",
+      "generation_params": null,
+      "validation_results": null,
+      "metrics": {
+        "demographic_parity_gap": {
+          "race": 0.318,
+          "sex": 0.1264
+        },
+        "equal_opportunity_gap": {
+          "race": 0.335,
+          "sex": 0.1003
+        },
+        "counterfactual_fairness": {
+          "race": 0.0622,
+          "sex": 0.0513
+        },
+        "overall_accuracy": 0.756,
+        "per_group_metrics": {
+          "race": {
+            "demographic_parity": {
+              "African-American": 0.5046,
+              "Caucasian": 0.2725,
+              "Hispanic": 0.2574,
+              "Other": 0.1866
+            },
+            "equal_opportunity": {
+              "African-American": 0.7544,
+              "Caucasian": 0.5341,
+              "Hispanic": 0.4815,
+              "Other": 0.4194
+            }
+          },
+          "sex": {
+            "demographic_parity": {
+              "Female": 0.2844,
+              "Male": 0.4108
+            },
+            "equal_opportunity": {
+              "Female": 0.5707,
+              "Male": 0.671
+            }
+          }
+        },
+        "rebalancing_targets": [
+          {
+            "attribute": "race",
+            "group": "Caucasian",
+            "current_tpr": 0.5341,
+            "reference_tpr": 0.7544,
+            "gap": 0.2203,
+            "n_records": 2103
+          },
+          {
+            "attribute": "race",
+            "group": "Hispanic",
+            "current_tpr": 0.4815,
+            "reference_tpr": 0.7544,
+            "gap": 0.2729,
+            "n_records": 509
+          },
+          {
+            "attribute": "race",
+            "group": "Other",
+            "current_tpr": 0.4194,
+            "reference_tpr": 0.7544,
+            "gap": 0.335,
+            "n_records": 343
+          },
+          {
+            "attribute": "sex",
+            "group": "Female",
+            "current_tpr": 0.5707,
+            "reference_tpr": 0.671,
+            "gap": 0.1003,
+            "n_records": 1171
+          }
+        ]
+      }
+    }
+  ],
+  "edges": [
+    {
+      "source": "ingestion-741bff26",
+      "target": "validation-ef279e01"
+    },
+    {
+      "source": "validation-ef279e01",
+      "target": "fairness_audit-ed4ec8ca"
+    },
+    {
+      "source": "validation-ef279e01",
+      "target": "authorization-c453364e"
+    },
+    {
+      "source": "fairness_audit-ed4ec8ca",
+      "target": "authorization-c453364e"
+    },
+    {
+      "source": "authorization-c453364e",
+      "target": "synthesis-ab90db3d"
+    },
+    {
+      "source": "authorization-c453364e",
+      "target": "synthesis-16ecaa7e"
+    },
+    {
+      "source": "authorization-c453364e",
+      "target": "synthesis-b5dd2c83"
+    },
+    {
+      "source": "authorization-c453364e",
+      "target": "synthesis-cb369aec"
+    },
+    {
+      "source": "authorization-c453364e",
+      "target": "validation-4db5a802"
+    },
+    {
+      "source": "validation-4db5a802",
+      "target": "fairness_audit-b01f461c"
+    },
+    {
+      "source": "fairness_audit-b01f461c",
+      "target": "validation-d9e8ab78"
+    },
+    {
+      "source": "validation-d9e8ab78",
+      "target": "escalation-fd0b8864"
+    },
+    {
+      "source": "escalation-fd0b8864",
+      "target": "authorization-9b958a3a"
+    },
+    {
+      "source": "authorization-9b958a3a",
+      "target": "fairness_audit-cd3ca5ee"
+    }
+  ]
+}

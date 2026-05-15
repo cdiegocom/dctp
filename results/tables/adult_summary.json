@@ -1,0 +1,193 @@
+{
+  "dataset": "adult_full",
+  "n_initial_validated": 30162,
+  "n_initial_quarantined": 2399,
+  "initial_eo_gap": {
+    "race": 0.22542242703533033,
+    "sex": 0.05130735936579067
+  },
+  "initial_dp_gap": {
+    "race": 0.18132202992538188,
+    "sex": 0.15616739323533702
+  },
+  "n_synthesis_batches": 4,
+  "n_synthesis_accepted": 4666,
+  "n_synthesis_quarantined": 0,
+  "rollback_executed": true,
+  "pre_rollback_fairness": {
+    "merged_corpus_n": 34828,
+    "pre_rollback_eo_gap": {
+      "race": 0.33198924731182794,
+      "sex": 0.07994563649095054
+    },
+    "p2_deltas_before_rollback": {
+      "race": -0.10656682027649761,
+      "sex": -0.028638277125159872
+    }
+  },
+  "p2_fairness_deltas": {
+    "race": 0.0,
+    "sex": 0.0
+  },
+  "final_eo_gap": {
+    "race": 0.22542242703533033,
+    "sex": 0.05130735936579067
+  },
+  "final_dp_gap": {
+    "race": 0.18132202992538188,
+    "sex": 0.15616739323533702
+  },
+  "provenance_evaluation": {
+    "lineage_completeness": 1.0,
+    "decision_coverage": 1.0,
+    "max_traceability_depth": 10,
+    "orphan_nodes": 0,
+    "total_nodes": 15,
+    "escalation_count": 2,
+    "authorization_count": 2
+  },
+  "n_merged": 30162,
+  "per_synthesis_batch": [
+    {
+      "target": "race=Amer-Indian-Eskimo",
+      "n_generated": 143,
+      "n_accepted": 143,
+      "P1_js_divergence": 0.0795,
+      "P1_passed": true,
+      "P2_fairness_delta": -0.1066,
+      "P2_passed": false,
+      "P3_verification_rate": 1.0,
+      "P4_plausibility_pass_rate": 1.0
+    },
+    {
+      "target": "race=Black",
+      "n_generated": 1408,
+      "n_accepted": 1408,
+      "P1_js_divergence": 0.0499,
+      "P1_passed": true,
+      "P2_fairness_delta": -0.1066,
+      "P2_passed": false,
+      "P3_verification_rate": 1.0,
+      "P4_plausibility_pass_rate": 1.0
+    },
+    {
+      "target": "race=Other",
+      "n_generated": 115,
+      "n_accepted": 115,
+      "P1_js_divergence": 0.0476,
+      "P1_passed": true,
+      "P2_fairness_delta": -0.1066,
+      "P2_passed": false,
+      "P3_verification_rate": 1.0,
+      "P4_plausibility_pass_rate": 1.0
+    },
+    {
+      "target": "race=White",
+      "n_generated": 3000,
+      "n_accepted": 3000,
+      "P1_js_divergence": 0.0245,
+      "P1_passed": true,
+      "P2_fairness_delta": -0.1066,
+      "P2_passed": false,
+      "P3_verification_rate": 1.0,
+      "P4_plausibility_pass_rate": 1.0
+    }
+  ],
+  "initial_demographic_coverage": {
+    "race": {
+      "White": {
+        "n_full": 27816,
+        "n_quarantined": 1883,
+        "exclusion_rate": 0.0677
+      },
+      "Black": {
+        "n_full": 3124,
+        "n_quarantined": 307,
+        "exclusion_rate": 0.0983
+      },
+      "Asian-Pac-Islander": {
+        "n_full": 1039,
+        "n_quarantined": 144,
+        "exclusion_rate": 0.1386
+      },
+      "Amer-Indian-Eskimo": {
+        "n_full": 311,
+        "n_quarantined": 25,
+        "exclusion_rate": 0.0804
+      },
+      "Other": {
+        "n_full": 271,
+        "n_quarantined": 40,
+        "exclusion_rate": 0.1476
+      }
+    },
+    "sex": {
+      "Male": {
+        "n_full": 21790,
+        "n_quarantined": 1410,
+        "exclusion_rate": 0.0647
+      },
+      "Female": {
+        "n_full": 10771,
+        "n_quarantined": 989,
+        "exclusion_rate": 0.0918
+      }
+    }
+  },
+  "initial_per_group_metrics": {
+    "race": {
+      "demographic_parity": {
+        "Amer-Indian-Eskimo": 0.0734,
+        "Asian-Pac-Islander": 0.2547,
+        "Black": 0.0785,
+        "Other": 0.0736,
+        "White": 0.1856
+      },
+      "equal_opportunity": {
+        "Amer-Indian-Eskimo": 0.5294,
+        "Asian-Pac-Islander": 0.7016,
+        "Black": 0.5109,
+        "Other": 0.4762,
+        "White": 0.5884
+      }
+    },
+    "sex": {
+      "demographic_parity": {
+        "Female": 0.0702,
+        "Male": 0.2264
+      },
+      "equal_opportunity": {
+        "Female": 0.5441,
+        "Male": 0.5954
+      }
+    }
+  },
+  "final_per_group_metrics": {
+    "race": {
+      "demographic_parity": {
+        "Amer-Indian-Eskimo": 0.0734,
+        "Asian-Pac-Islander": 0.2547,
+        "Black": 0.0785,
+        "Other": 0.0736,
+        "White": 0.1856
+      },
+      "equal_opportunity": {
+        "Amer-Indian-Eskimo": 0.5294,
+        "Asian-Pac-Islander": 0.7016,
+        "Black": 0.5109,
+        "Other": 0.4762,
+        "White": 0.5884
+      }
+    },
+    "sex": {
+      "demographic_parity": {
+        "Female": 0.0702,
+        "Male": 0.2264
+      },
+      "equal_opportunity": {
+        "Female": 0.5441,
+        "Male": 0.5954
+      }
+    }
+  }
+}

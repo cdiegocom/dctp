@@ -1,0 +1,9 @@
+Dataset,Target,N generated,N accepted,P1 JS divergence,P1 passed,P2 delta,P2 passed,P3 verification rate,P4 plausibility rate
+ADULT,race=Amer-Indian-Eskimo,143,143,0.0795,True,-0.1066,False,1.0,1.0
+ADULT,race=Black,1408,1408,0.0499,True,-0.1066,False,1.0,1.0
+ADULT,race=Other,115,115,0.0476,True,-0.1066,False,1.0,1.0
+ADULT,race=White,3000,3000,0.0245,True,-0.1066,False,1.0,1.0
+COMPAS,race=Caucasian,1051,1051,0.0031,True,+0.0177,True,1.0,1.0
+COMPAS,race=Hispanic,254,254,0.0174,True,+0.0177,True,1.0,1.0
+COMPAS,race=Other,171,171,0.0117,True,+0.0177,True,1.0,1.0
+COMPAS,sex=Female,585,585,0.0035,True,-0.0658,False,1.0,1.0

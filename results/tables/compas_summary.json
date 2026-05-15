@@ -1,0 +1,184 @@
+{
+  "dataset": "compas_full",
+  "n_initial_validated": 6130,
+  "n_initial_quarantined": 0,
+  "initial_eo_gap": {
+    "race": 0.33501000174787826,
+    "sex": 0.10026577801402492
+  },
+  "initial_dp_gap": {
+    "race": 0.31797800785105945,
+    "sex": 0.12639596871976166
+  },
+  "n_synthesis_batches": 4,
+  "n_synthesis_accepted": 2061,
+  "n_synthesis_quarantined": 0,
+  "rollback_executed": true,
+  "pre_rollback_fairness": {
+    "merged_corpus_n": 8191,
+    "pre_rollback_eo_gap": {
+      "race": 0.317284870324492,
+      "sex": 0.16606852285410428
+    },
+    "p2_deltas_before_rollback": {
+      "race": 0.017725131423386276,
+      "sex": -0.06580274484007936
+    }
+  },
+  "p2_fairness_deltas": {
+    "race": 0.0,
+    "sex": 0.0
+  },
+  "final_eo_gap": {
+    "race": 0.33501000174787826,
+    "sex": 0.10026577801402492
+  },
+  "final_dp_gap": {
+    "race": 0.31797800785105945,
+    "sex": 0.12639596871976166
+  },
+  "provenance_evaluation": {
+    "lineage_completeness": 1.0,
+    "decision_coverage": 1.0,
+    "max_traceability_depth": 9,
+    "orphan_nodes": 0,
+    "total_nodes": 14,
+    "escalation_count": 1,
+    "authorization_count": 2
+  },
+  "n_merged": 6130,
+  "per_synthesis_batch": [
+    {
+      "target": "race=Caucasian",
+      "n_generated": 1051,
+      "n_accepted": 1051,
+      "P1_js_divergence": 0.0031,
+      "P1_passed": true,
+      "P2_fairness_delta": 0.0177,
+      "P2_passed": true,
+      "P3_verification_rate": 1.0,
+      "P4_plausibility_pass_rate": 1.0
+    },
+    {
+      "target": "race=Hispanic",
+      "n_generated": 254,
+      "n_accepted": 254,
+      "P1_js_divergence": 0.0174,
+      "P1_passed": true,
+      "P2_fairness_delta": 0.0177,
+      "P2_passed": true,
+      "P3_verification_rate": 1.0,
+      "P4_plausibility_pass_rate": 1.0
+    },
+    {
+      "target": "race=Other",
+      "n_generated": 171,
+      "n_accepted": 171,
+      "P1_js_divergence": 0.0117,
+      "P1_passed": true,
+      "P2_fairness_delta": 0.0177,
+      "P2_passed": true,
+      "P3_verification_rate": 1.0,
+      "P4_plausibility_pass_rate": 1.0
+    },
+    {
+      "target": "sex=Female",
+      "n_generated": 585,
+      "n_accepted": 585,
+      "P1_js_divergence": 0.0035,
+      "P1_passed": true,
+      "P2_fairness_delta": -0.0658,
+      "P2_passed": false,
+      "P3_verification_rate": 1.0,
+      "P4_plausibility_pass_rate": 1.0
+    }
+  ],
+  "initial_demographic_coverage": {
+    "race": {
+      "Other": {
+        "n_full": 343,
+        "n_quarantined": 0,
+        "exclusion_rate": 0.0
+      },
+      "African-American": {
+        "n_full": 3175,
+        "n_quarantined": 0,
+        "exclusion_rate": 0.0
+      },
+      "Caucasian": {
+        "n_full": 2103,
+        "n_quarantined": 0,
+        "exclusion_rate": 0.0
+      },
+      "Hispanic": {
+        "n_full": 509,
+        "n_quarantined": 0,
+        "exclusion_rate": 0.0
+      }
+    },
+    "sex": {
+      "Male": {
+        "n_full": 4959,
+        "n_quarantined": 0,
+        "exclusion_rate": 0.0
+      },
+      "Female": {
+        "n_full": 1171,
+        "n_quarantined": 0,
+        "exclusion_rate": 0.0
+      }
+    }
+  },
+  "initial_per_group_metrics": {
+    "race": {
+      "demographic_parity": {
+        "African-American": 0.5046,
+        "Caucasian": 0.2725,
+        "Hispanic": 0.2574,
+        "Other": 0.1866
+      },
+      "equal_opportunity": {
+        "African-American": 0.7544,
+        "Caucasian": 0.5341,
+        "Hispanic": 0.4815,
+        "Other": 0.4194
+      }
+    },
+    "sex": {
+      "demographic_parity": {
+        "Female": 0.2844,
+        "Male": 0.4108
+      },
+      "equal_opportunity": {
+        "Female": 0.5707,
+        "Male": 0.671
+      }
+    }
+  },
+  "final_per_group_metrics": {
+    "race": {
+      "demographic_parity": {
+        "African-American": 0.5046,
+        "Caucasian": 0.2725,
+        "Hispanic": 0.2574,
+        "Other": 0.1866
+      },
+      "equal_opportunity": {
+        "African-American": 0.7544,
+        "Caucasian": 0.5341,
+        "Hispanic": 0.4815,
+        "Other": 0.4194
+      }
+    },
+    "sex": {
+      "demographic_parity": {
+        "Female": 0.2844,
+        "Male": 0.4108
+      },
+      "equal_opportunity": {
+        "Female": 0.5707,
+        "Male": 0.671
+      }
+    }
+  }
+}
