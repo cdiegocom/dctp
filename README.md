@@ -34,13 +34,18 @@ only technical lineage.
 │   ├── cross_dataset.py               # aggregated comparison
 │   ├── single_seed.py                 # one (dataset, seed) for multi-seed sweep
 │   ├── aggregate_multi_seed.py        # multi-seed aggregation + figure
+│   ├── single_backend.py              # one (dataset, seed, generator) for multi-backend
+│   ├── aggregate_multi_backend.py     # multi-backend aggregation + figure
 │   └── smoke_test.py                  # quick integration check (CI)
 ├── results/
-│   ├── figures/                       # publication figures (.png, 200 dpi)
+│   ├── figures/                       # publication figures (.png, 300 dpi)
 │   ├── tables/                        # per-run summaries + aggregated tables
 │   └── provenance_graphs/             # full lineage graphs as JSON
-├── paper1_draft.md                    # manuscript for Patterns
-├── references.bib                     # bibliographic entries
+├── main.tex                           # manuscript LaTeX source (submission)
+├── main.pdf                           # compiled manuscript PDF
+├── cover_letter.tex / .pdf            # cover letter for the journal
+├── MANUSCRIPT_NOTES.md                # compact summary pointing to main.tex
+├── references.bib                     # bibliographic entries (26)
 ├── requirements.txt                   # pinned dependencies
 ├── CITATION.cff                       # citable-software metadata
 └── LICENSE                            # MIT
@@ -57,15 +62,27 @@ python experiments/run_compas.py
 python experiments/cross_dataset.py
 
 # Multi-seed robustness (Table 5; Figure 3)
-for seed in 13 42 137; do
+for seed in 7 13 23 42 71 101 137 211 313 911; do
     python experiments/single_seed.py --dataset adult --seed $seed
     python experiments/single_seed.py --dataset compas --seed $seed
 done
 python experiments/aggregate_multi_seed.py
+
+# Multi-generator robustness (Table 6; Figure 4)
+for seed in 13 42 137; do
+  for backend in ctgan tvae; do
+    python experiments/single_backend.py --dataset compas --seed $seed \
+        --backend $backend --epochs 150
+    python experiments/single_backend.py --dataset adult --seed $seed \
+        --backend $backend --epochs 30 --adult-sample 5000
+  done
+done
+python experiments/aggregate_multi_backend.py
 ```
 
-All runs are deterministic (random_state controlled). Total wall-clock time is
-approximately 8–12 minutes including the multi-seed sweep.
+All runs are deterministic (random_state controlled). Total wall-clock time
+is approximately 60–75 minutes including the multi-seed sweep and the
+multi-generator replication.
 
 ## Datasets
 
@@ -96,23 +113,50 @@ Hispanic, Other.
 | Decision coverage | 1.0 | 1.0 |
 | Max traceability depth | 10 | 9 |
 
-## Multi-seed robustness (seeds = 13, 42, 137)
+## Multi-generator robustness (Gaussian Copula vs CTGAN vs TVAE, 3 seeds each)
+
+| Dataset | Generator | Attribute | P1 pass rate | P2 Δ (mean ± std) | Rollback |
+|---|---|---|---|---|---|
+| Adult | Gaussian Copula | race | 100% | −0.1204 ± 0.0228 | 3/3 |
+| Adult | Gaussian Copula | sex | 100% | −0.0303 ± 0.0102 | 3/3 |
+| Adult | CTGAN | race | 75% | +0.0560 ± 0.0996 | 3/3 |
+| Adult | CTGAN | sex | 75% | −0.1388 ± 0.0153 | 3/3 |
+| Adult | TVAE | race | 0% | undefined | 0/3 |
+| Adult | TVAE | sex | 0% | undefined | 0/3 |
+| COMPAS | Gaussian Copula | race | 100% | +0.0162 ± 0.0144 | 3/3 |
+| COMPAS | Gaussian Copula | sex | 100% | −0.0343 ± 0.0273 | 3/3 |
+| COMPAS | CTGAN | race | 100% | +0.0156 ± 0.0395 | 2/3 |
+| COMPAS | CTGAN | sex | 100% | +0.0308 ± 0.0173 | 2/3 |
+| COMPAS | TVAE | race | 70% | +0.0389 ± 0.0191 | 0/3 |
+| COMPAS | TVAE | sex | 70% | +0.0270 ± 0.0370 | 0/3 |
+
+The three generators behave differently on the same data. Gaussian Copula
+passes P1 trivially but fails P2. CTGAN passes P1 at moderate rates with mixed
+P2 outcomes. TVAE fails P1 entirely on Adult and partially on COMPAS but
+improves fairness when its batches do survive P1. **No single protocol detects
+all failures: each generator requires a different combination of P1–P4 checks
+to be governable.** Across all 18 (dataset, generator, seed) configurations
+reported in the table, the pipeline detected each generator's distinct
+failure mode and either quarantined batches via P1 (TVAE) or executed
+rollback via P2 (Gaussian Copula and CTGAN on the regressing attributes).
+
+## Multi-seed robustness with Gaussian Copula (10 seeds, primary generator)
 
 | Dataset | Attribute | P2 delta (mean ± std) | Seeds with P2 < 0 | Rollback |
 |---|---|---|---|---|
-| Adult | race | −0.120 ± 0.023 | 3 / 3 | 3 / 3 |
-| Adult | sex | −0.030 ± 0.010 | 3 / 3 | 3 / 3 |
-| COMPAS | race | +0.016 ± 0.014 | 0 / 3 | 3 / 3 |
-| COMPAS | sex | −0.034 ± 0.027 | 3 / 3 | 3 / 3 |
+| Adult | race | −0.1273 ± 0.0191 | 10 / 10 | 10 / 10 |
+| Adult | sex | −0.0330 ± 0.0135 | 10 / 10 | 10 / 10 |
+| COMPAS | race | −0.0014 ± 0.0162 | 6 / 10 | 10 / 10 |
+| COMPAS | sex | −0.0290 ± 0.0159 | 10 / 10 | 10 / 10 |
 
-**Central empirical finding.** Across both datasets and three random seeds,
-naive distributional synthesis passed P1 (Jensen–Shannon divergence
-0.003–0.080, all under the 0.10 threshold) but failed P2 in every (dataset,
-seed) configuration on at least one protected attribute. The pipeline detected
-each regression, executed automatic rollback per the Fairness–Synthesis
-conflict resolution protocol, and recorded the authorization in the provenance
-graph. P1 alone is insufficient as a single check; the four-protocol structure
-is what makes synthesis auditable.
+**Central empirical finding.** Across both datasets and ten random seeds (40
+attribute-seed observations), naive distributional synthesis passed P1
+(Jensen–Shannon divergence 0.003–0.080, all under the 0.10 threshold) but
+produced non-positive P2 deltas in 36 of 40 cases. The pipeline detected each
+regression, executed automatic rollback per the Fairness–Synthesis conflict
+resolution protocol, and recorded the authorization in the provenance graph
+in all 20 (dataset, seed) configurations. P1 alone is insufficient as a single
+check; the four-protocol structure is what makes synthesis auditable.
 
 ## Layer evaluation criteria
 
@@ -161,6 +205,4 @@ under their original licenses (see LICENSE for details).
 
 ## Contact
 
-Carlos Diego Cavalcanti Pereira — Visiting Fellow, Sloan School of Management,
-Massachusetts Institute of Technology, and Professor at CESAR School (Recife
-Center for Advanced Studies and Systems). cdiego@mit.edu
+Carlos Diego Cavalcanti Pereira — Massachusetts Institute of Technology. cdiego@mit.edu

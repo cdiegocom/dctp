@@ -25,9 +25,20 @@ import pandas as pd
 from scipy.spatial import distance
 
 from sdv.metadata import SingleTableMetadata
-from sdv.single_table import GaussianCopulaSynthesizer
+from sdv.single_table import (
+    CTGANSynthesizer,
+    GaussianCopulaSynthesizer,
+    TVAESynthesizer,
+)
 
 from .provenance import EventType, Layer, ProvenanceGraph, hash_synthetic_record
+
+
+_BACKEND_REGISTRY = {
+    "gaussian_copula": GaussianCopulaSynthesizer,
+    "ctgan": CTGANSynthesizer,
+    "tvae": TVAESynthesizer,
+}
 
 
 @dataclass
@@ -90,12 +101,23 @@ class SynthesisLayer:
         actor_id: str = "data_scientist",
         random_state: int = 42,
         privacy_epsilon: float = 2.0,
+        backend: str = "gaussian_copula",
+        ctgan_epochs: int = 100,
+        tvae_epochs: int = 100,
     ):
         self.js_threshold = js_divergence_threshold
         self.p4_min_pass = p4_min_pass_rate
         self.actor_id = actor_id
         self.random_state = random_state
         self.privacy_epsilon = privacy_epsilon
+        if backend not in _BACKEND_REGISTRY:
+            raise ValueError(
+                f"Unknown backend '{backend}'. "
+                f"Available: {list(_BACKEND_REGISTRY.keys())}"
+            )
+        self.backend = backend
+        self.ctgan_epochs = ctgan_epochs
+        self.tvae_epochs = tvae_epochs
 
     # ---- P1: Distributional Invariance ----
 
@@ -189,19 +211,28 @@ class SynthesisLayer:
     # ---- generation ----
 
     def _fit_synthesizer(self, source: pd.DataFrame) -> tuple[Any, dict[str, Any]]:
-        """Fit a Gaussian Copula synthesizer on the source distribution."""
+        """Fit the configured synthesizer on the source distribution."""
         metadata = SingleTableMetadata()
         metadata.detect_from_dataframe(source)
 
-        synthesizer = GaussianCopulaSynthesizer(
-            metadata=metadata,
-            enforce_min_max_values=True,
-            enforce_rounding=False,
-        )
+        cls = _BACKEND_REGISTRY[self.backend]
+        kwargs = {
+            "metadata": metadata,
+            "enforce_min_max_values": True,
+            "enforce_rounding": False,
+        }
+        if self.backend == "ctgan":
+            kwargs["epochs"] = self.ctgan_epochs
+            kwargs["verbose"] = False
+        elif self.backend == "tvae":
+            kwargs["epochs"] = self.tvae_epochs
+
+        synthesizer = cls(**kwargs)
         synthesizer.fit(source)
 
         params = {
-            "model": "GaussianCopulaSynthesizer",
+            "model": cls.__name__,
+            "backend": self.backend,
             "library": "sdv",
             "n_source": len(source),
             "n_columns": source.shape[1],
@@ -209,6 +240,10 @@ class SynthesisLayer:
             "privacy_epsilon": self.privacy_epsilon,
             "fit_time_iso": datetime.now(timezone.utc).isoformat(),
         }
+        if self.backend == "ctgan":
+            params["ctgan_epochs"] = self.ctgan_epochs
+        elif self.backend == "tvae":
+            params["tvae_epochs"] = self.tvae_epochs
         return synthesizer, params
 
     # ---- main orchestration ----
@@ -243,7 +278,7 @@ class SynthesisLayer:
             )
 
         batch_id = f"batch-{uuid.uuid4().hex[:8]}"
-        model_id = f"GaussianCopula-{self.random_state}"
+        model_id = f"{self.backend}-{self.random_state}"
 
         synthesizer, gen_params = self._fit_synthesizer(source_group)
         np.random.seed(self.random_state)

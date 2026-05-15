@@ -163,7 +163,7 @@ def main():
         axes[i].set_title(f"{ds} — across {len(SEEDS)} seeds")
     fig.suptitle("Multi-seed robustness: negative P2 delta is consistent", fontsize=12)
     plt.tight_layout()
-    plt.savefig(RESULTS / "figures" / "multi_seed_p2_distribution.png", dpi=200)
+    plt.savefig(RESULTS / "figures" / "multi_seed_p2_distribution.png", dpi=300)
     plt.close()
     print(f"\nFigure saved: multi_seed_p2_distribution.png")
 

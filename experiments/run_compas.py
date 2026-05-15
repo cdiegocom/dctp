@@ -146,7 +146,7 @@ def main():
     ax.set_title("COMPAS Recidivism — Disparity outcomes under pipeline governance")
     ax.legend()
     plt.tight_layout()
-    plt.savefig(figdir / "compas_eo_gap.png", dpi=200)
+    plt.savefig(figdir / "compas_eo_gap.png", dpi=300)
     plt.close()
     print("Figure saved: compas_eo_gap.png")
 
@@ -169,7 +169,7 @@ def main():
         axes[i].legend()
     fig.suptitle("COMPAS — Per-group equal opportunity")
     plt.tight_layout()
-    plt.savefig(figdir / "compas_per_group_tpr.png", dpi=200)
+    plt.savefig(figdir / "compas_per_group_tpr.png", dpi=300)
     plt.close()
     print("Figure saved: compas_per_group_tpr.png")
 
@@ -187,7 +187,7 @@ def main():
         ax.set_title("COMPAS — Protocol P1 outcomes per synthesis batch")
         ax.legend()
         plt.tight_layout()
-        plt.savefig(figdir / "compas_p1_divergence.png", dpi=200)
+        plt.savefig(figdir / "compas_p1_divergence.png", dpi=300)
         plt.close()
         print("Figure saved: compas_p1_divergence.png")
 

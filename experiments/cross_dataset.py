@@ -104,7 +104,7 @@ def cross_dataset_figure(df_summary: pd.DataFrame):
     ax.legend(loc="upper right", fontsize=9)
     plt.tight_layout()
     out = RESULTS / "figures" / "cross_dataset_summary.png"
-    plt.savefig(out, dpi=200)
+    plt.savefig(out, dpi=300)
     plt.close()
     print(f"Saved {out}")
 
@@ -161,7 +161,7 @@ def provenance_graph_figure(name: str):
     ax.axis("off")
     plt.tight_layout()
     out = RESULTS / "figures" / f"provenance_graph_{name}.png"
-    plt.savefig(out, dpi=200)
+    plt.savefig(out, dpi=300)
     plt.close()
     print(f"Saved {out}")
 

@@ -82,7 +82,7 @@ def main():
     (RESULTS / "tables" / "multi_seed_summary.md").write_text("\n".join(md_lines))
     print(f"\nMarkdown saved.")
 
-    # Figure 1: P2 delta scatter across seeds
+    # Figure 1: P2 delta scatter across seeds (per-point color reflects per-seed sign)
     fig, axes = plt.subplots(1, 2, figsize=(11, 4.5))
     for i, ds in enumerate(["adult", "compas"]):
         sub = df[df["dataset"] == ds]
@@ -90,11 +90,11 @@ def main():
         for j, attr in enumerate(attrs):
             vals = sub[sub["attribute"] == attr]["p2_delta_pre_rollback"].values
             mean_val = float(np.mean(vals))
-            color = "#27ae60" if mean_val >= 0 else "#c0392b"
-            axes[i].scatter([j] * len(vals), vals, color=color, alpha=0.75, s=110,
+            point_colors = ["#c0392b" if v < 0 else "#27ae60" for v in vals]
+            axes[i].scatter([j] * len(vals), vals, color=point_colors, alpha=0.75, s=110,
                             edgecolors="black", linewidths=0.6, zorder=3)
             axes[i].plot([j - 0.22, j + 0.22], [mean_val, mean_val],
-                         color="black", linewidth=2, zorder=2)
+                         color="black", linewidth=2.2, zorder=2)
         axes[i].axhline(y=0, color="gray", linewidth=1, linestyle="-", zorder=1)
         axes[i].set_xticks(range(len(attrs)))
         axes[i].set_xticklabels([a.capitalize() for a in attrs])
@@ -102,11 +102,11 @@ def main():
         axes[i].set_title(f"{ds.upper()} — {df['seed'].nunique()} seeds")
         axes[i].grid(axis="y", alpha=0.3)
     fig.suptitle(
-        "Multi-seed robustness: P2 regression is consistent across seeds",
+        "Multi-seed robustness: P2 deltas are negative or near-zero, never reliably positive",
         fontsize=12, y=1.02,
     )
     plt.tight_layout()
-    plt.savefig(RESULTS / "figures" / "multi_seed_p2_distribution.png", dpi=200,
+    plt.savefig(RESULTS / "figures" / "multi_seed_p2_distribution.png", dpi=300,
                 bbox_inches="tight")
     plt.close()
     print("Figure saved: multi_seed_p2_distribution.png")

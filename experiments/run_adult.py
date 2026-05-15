@@ -123,7 +123,7 @@ def main():
     ax.set_title("Adult Census Income — Disparity reduction via the pipeline")
     ax.legend()
     plt.tight_layout()
-    plt.savefig(figdir / "adult_eo_gap.png", dpi=200)
+    plt.savefig(figdir / "adult_eo_gap.png", dpi=300)
     plt.close()
     print(f"Figure saved: adult_eo_gap.png")
 
@@ -146,7 +146,7 @@ def main():
         axes[i].legend()
     fig.suptitle("Adult — Per-group equal opportunity, before and after synthesis")
     plt.tight_layout()
-    plt.savefig(figdir / "adult_per_group_tpr.png", dpi=200)
+    plt.savefig(figdir / "adult_per_group_tpr.png", dpi=300)
     plt.close()
     print(f"Figure saved: adult_per_group_tpr.png")
 
@@ -163,7 +163,7 @@ def main():
     ax.set_title("Adult — Protocol P1 outcomes per synthesis batch")
     ax.legend()
     plt.tight_layout()
-    plt.savefig(figdir / "adult_p1_divergence.png", dpi=200)
+    plt.savefig(figdir / "adult_p1_divergence.png", dpi=300)
     plt.close()
     print(f"Figure saved: adult_p1_divergence.png")
 
