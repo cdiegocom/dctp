@@ -1,0 +1,50 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite both the article and the software release."
+title: "Data-Centric Trust Pipeline: Reference Implementation"
+type: software
+authors:
+  - family-names: "Cavalcanti Pereira"
+    given-names: "Carlos Diego"
+    affiliation: "Massachusetts Institute of Technology, Sloan School of Management (Visiting Fellows Program); CESAR School, Recife, Brazil"
+    email: "cdiego@mit.edu"
+    orcid: "https://orcid.org/0009-0005-2003-8713"
+abstract: >-
+  Reference implementation of the Data-Centric Trust Pipeline — a four-layer
+  governance framework (Integrity, Fairness, Synthesis, Provenance) for
+  trustworthy AI in sensitive domains. Includes empirical validation on the
+  Adult Census Income and ProPublica COMPAS datasets across 32 dataset-
+  generator-seed configurations (26 independent pipeline executions),
+  the four-protocol validation structure for synthetic data (P1
+  distributional invariance, P2 fairness delta as batch-level discriminators;
+  P3 cryptographic provenance, P4 domain plausibility as record-level
+  invariants), three specified conflict-resolution protocols, and a
+  decision-level provenance graph with auditable rationale records.
+keywords:
+  - trustworthy AI
+  - data governance
+  - algorithmic fairness
+  - synthetic data
+  - data provenance
+  - accountability
+  - data-centric AI
+  - AI auditing
+  - decision-level provenance
+license: MIT
+repository-code: "https://github.com/cdiegocom/dctp"
+url: "https://github.com/cdiegocom/dctp"
+version: "1.1.0"
+date-released: "2026-06-23"
+preferred-citation:
+  type: article
+  authors:
+    - family-names: "Cavalcanti Pereira"
+      given-names: "Carlos Diego"
+      affiliation: "Massachusetts Institute of Technology, Sloan School of Management (Visiting Fellows Program); CESAR School, Recife, Brazil"
+      email: "cdiego@mit.edu"
+      orcid: "https://orcid.org/0009-0005-2003-8713"
+  title: "A Data-Centric Trust Pipeline: An Empirical Framework for Trustworthy AI in Sensitive Domains"
+  year: 2026
+  journal: "AI and Ethics"
+  publisher:
+    name: "Springer Nature"
+  status: "in revision (round 1)"

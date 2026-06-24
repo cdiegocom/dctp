@@ -1,27 +1,40 @@
 # Data-Centric Trust Pipeline
 
-[![ci](https://github.com/cdiegocom/dctp/actions/workflows/ci.yml/badge.svg)](https://github.com/cdiegocom/dctp/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/downloads/)
+[![DOI: data](https://img.shields.io/badge/Adult-10.24432%2FC5XW20-blue)](https://doi.org/10.24432/C5XW20)
 
 Reference implementation and empirical validation for the four-layer
-**Data-Centric Trust Pipeline** introduced in:
+**Data-Centric Trust Pipeline**, introduced in:
 
 > Cavalcanti Pereira, C. D. (2026). *A Data-Centric Trust Pipeline: An
 > Empirical Framework for Trustworthy AI in Sensitive Domains.*
-> (Under submission to *Patterns*.)
+> Under revision at *AI and Ethics* (Springer Nature) — round-1 major
+> revision response submitted.
 
-The pipeline operationalizes four interdependent governance layers — Integrity,
-Fairness, Synthesis, and Provenance — and three inter-layer conflict-resolution
-protocols. It treats synthetic data as a governed layer with structured P1–P4
-validation, and records decision-level provenance (why and by whom) rather than
-only technical lineage.
+The pipeline operationalizes four interdependent governance layers —
+Integrity, Fairness, Synthesis, and Provenance — coupled through three
+specified inter-layer conflict-resolution protocols. It treats synthetic
+data as a governed layer with structured P1–P4 validation, and records
+decision-level provenance (why and by whom) rather than only technical
+lineage. The framework is evaluated on the Adult Census Income and
+ProPublica COMPAS benchmarks across 32 dataset–generator–seed
+configurations covering 26 independent pipeline executions.
+
+## Status
+
+The article was originally adapted from a *Patterns* (Cell Press)
+submission and is currently under revision at *AI and Ethics* following
+a major-revision invitation. Round-1 reviewer responses and the revised
+manuscript are in [`revision_round_1/`](./revision_round_1/).
 
 ## Repository structure
 
 ```
 .
 ├── data/                              # source datasets (Adult, COMPAS)
+│   ├── adult.csv
+│   └── compas.csv
 ├── src/
 │   ├── integrity.py                   # Integrity Layer
 │   ├── fairness.py                    # Fairness Layer (DP, EO, CF)
@@ -29,180 +42,192 @@ only technical lineage.
 │   ├── provenance.py                  # Provenance Layer (lineage graph)
 │   └── pipeline.py                    # Orchestrator
 ├── experiments/
-│   ├── run_adult.py                   # full Adult Census run
-│   ├── run_compas.py                  # full COMPAS recidivism run
-│   ├── cross_dataset.py               # aggregated comparison
-│   ├── single_seed.py                 # one (dataset, seed) for multi-seed sweep
-│   ├── aggregate_multi_seed.py        # multi-seed aggregation + figure
-│   ├── single_backend.py              # one (dataset, seed, generator) for multi-backend
-│   ├── aggregate_multi_backend.py     # multi-backend aggregation + figure
-│   └── smoke_test.py                  # quick integration check (CI)
+│   ├── run_adult.py                   # Primary Adult pipeline
+│   ├── run_compas.py                  # Primary COMPAS pipeline
+│   ├── cross_dataset.py               # Cross-dataset comparison
+│   ├── single_seed.py                 # Single (dataset, seed) run
+│   ├── single_backend.py              # Single (dataset, backend, seed) run
+│   ├── aggregate_multi_seed.py        # Aggregate the 20-run multi-seed sweep
+│   ├── aggregate_multi_backend.py     # Aggregate the 12-run multi-generator sweep
+│   ├── classifier_ablation.py         # Random Forest vs Logistic Regression
+│   └── smoke_test.py                  # Minimal smoke test
 ├── results/
-│   ├── figures/                       # publication figures (.png, 300 dpi)
-│   ├── tables/                        # per-run summaries + aggregated tables
-│   └── provenance_graphs/             # full lineage graphs as JSON
-├── main.tex                           # manuscript LaTeX source (submission)
-├── main.pdf                           # compiled manuscript PDF
-├── cover_letter.tex / .pdf            # cover letter for the journal
-├── MANUSCRIPT_NOTES.md                # compact summary pointing to main.tex
-├── references.bib                     # bibliographic entries (26)
-├── requirements.txt                   # pinned dependencies
-├── CITATION.cff                       # citable-software metadata
+│   ├── figures/                       # Generated PNGs cited in the manuscript
+│   ├── tables/                        # CSV/MD aggregates and per-run summaries
+│   └── provenance_graphs/             # Lineage graphs (per-run JSON)
+├── revision_round_1/
+│   ├── Response_to_Reviewers.pdf      # Point-by-point response
+│   └── tracked_changes.pdf            # latexdiff vs pre-revision version
+├── main_aie.tex                       # Manuscript (LaTeX source)
+├── main_aie.pdf                       # Manuscript (compiled)
+├── references.bib                     # Bibliography (37 entries)
+├── requirements.txt                   # Pinned dependencies
+├── Makefile                           # Reproduction targets
+├── CITATION.cff                       # Software citation metadata
+├── MANUSCRIPT_NOTES.md                # Compact structural summary
 └── LICENSE                            # MIT
 ```
 
-## Reproducing the empirical results
+## Quickstart
 
 ```bash
+# Clone and set up
+git clone https://github.com/cdiegocom/dctp.git
+cd dctp
+python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 
-# Headline runs (Tables 2, 3, 4; Figures 1, 2)
-python experiments/run_adult.py
-python experiments/run_compas.py
-python experiments/cross_dataset.py
+# Smoke test (~30 s)
+python3 experiments/smoke_test.py
 
-# Multi-seed robustness (Table 5; Figure 3)
-for seed in 7 13 23 42 71 101 137 211 313 911; do
-    python experiments/single_seed.py --dataset adult --seed $seed
-    python experiments/single_seed.py --dataset compas --seed $seed
-done
-python experiments/aggregate_multi_seed.py
+# Primary single-seed experiments (~3 min)
+make experiments
 
-# Multi-generator robustness (Table 6; Figure 4)
-for seed in 13 42 137; do
-  for backend in ctgan tvae; do
-    python experiments/single_backend.py --dataset compas --seed $seed \
-        --backend $backend --epochs 150
-    python experiments/single_backend.py --dataset adult --seed $seed \
-        --backend $backend --epochs 30 --adult-sample 5000
-  done
-done
-python experiments/aggregate_multi_backend.py
+# Build the manuscript
+make paper
 ```
 
-All runs are deterministic (random_state controlled). Total wall-clock time
-is approximately 60–75 minutes including the multi-seed sweep and the
-multi-generator replication.
+## Reproduction targets
 
-## Datasets
+| Target              | What it does                                                        | Time   |
+| ------------------- | ------------------------------------------------------------------- | ------ |
+| `make paper`        | Compile `main_aie.pdf` from LaTeX                                   | ~30 s  |
+| `make experiments`  | Run the primary Adult + COMPAS single-seed pipelines                | ~3 min |
+| `make multiseed`    | 10 seeds × 2 datasets with Gaussian Copula (20 independent runs)    | ~25 min|
+| `make multibackend` | CTGAN + TVAE at 3 seeds × 2 datasets (12 additional runs)           | ~45 min|
+| `make ablation`     | Logistic Regression classifier ablation (added in R1 revision)      | ~5 min |
+| `make all`          | Manuscript + all experiments                                        | ~1.5 h |
+| `make clean`        | Remove LaTeX build artifacts (keeps `main_aie.pdf`)                 | < 1 s  |
+| `make distclean`    | Also remove `main_aie.pdf` and all experiment outputs               | < 1 s  |
 
-| Dataset | Source | Records (raw / validated) | Protected attributes | Outcome |
-|---|---|---|---|---|
-| Adult Census Income | algofairness/fairness-comparison (UCI mirror) | 32,561 / 30,162 | race, sex | `income > 50K` |
-| COMPAS Recidivism | propublica/compas-analysis | 7,214 / 6,130 | race, sex | `two_year_recid` |
+Wall-clock times are for commodity hardware (8-core x86_64, no GPU).
+CTGAN and TVAE training is the dominant cost; the Gaussian Copula sweep
+is fast.
 
-COMPAS preprocessing follows the standard ProPublica filter:
-`days_b_screening_arrest ∈ [-30, 30]`, `is_recid ≠ -1`, `c_charge_degree ≠ "O"`,
-`score_text ≠ "N/A"`, and races restricted to African-American, Caucasian,
-Hispanic, Other.
+## The four layers, in brief
 
-## Headline results (seed = 42)
+| Layer        | Function                                          | Key outputs                                    |
+| ------------ | ------------------------------------------------- | ---------------------------------------------- |
+| Integrity    | Structural and demographic validation             | Validated records, coverage matrix, exclusions |
+| Fairness    | Demographic parity, equal opportunity, counter-factual fairness | Per-group metrics, rebalancing targets |
+| Synthesis    | Generate underrepresented records under P1–P4     | Synthetic batches, per-batch protocol audit    |
+| Provenance   | Decision-level lineage with rationale             | Lineage graph, AUTHORIZATION nodes             |
 
-| | Adult | COMPAS |
-|---|---|---|
-| N validated / quarantined | 30,162 / 2,399 | 6,130 / 0 |
-| Baseline EO gap (race) | 0.2254 | 0.3350 |
-| Baseline EO gap (sex) | 0.0513 | 0.1003 |
-| Synthesis batches generated | 4 | 4 |
-| P1 passed (JS divergence ≤ 0.10) | 4 / 4 | 4 / 4 |
-| P2 passed (fairness delta ≥ 0) | 0 / 4 | 3 / 4 |
-| Rollback executed | Yes | Yes |
-| Final EO gap (race / sex) | 0.225 / 0.051 | 0.335 / 0.100 |
-| Provenance nodes | 15 | 14 |
-| Lineage completeness | 1.0 | 1.0 |
-| Decision coverage | 1.0 | 1.0 |
-| Max traceability depth | 10 | 9 |
+### The four synthesis protocols (calibrated in the AIE revision)
 
-## Multi-generator robustness (Gaussian Copula vs CTGAN vs TVAE, 3 seeds each)
+Discriminators that did empirical work in this evaluation:
 
-| Dataset | Generator | Attribute | P1 pass rate | P2 Δ (mean ± std) | Rollback |
-|---|---|---|---|---|---|
-| Adult | Gaussian Copula | race | 100% | −0.1204 ± 0.0228 | 3/3 |
-| Adult | Gaussian Copula | sex | 100% | −0.0303 ± 0.0102 | 3/3 |
-| Adult | CTGAN | race | 75% | +0.0560 ± 0.0996 | 3/3 |
-| Adult | CTGAN | sex | 75% | −0.1388 ± 0.0153 | 3/3 |
-| Adult | TVAE | race | 0% | undefined | 0/3 |
-| Adult | TVAE | sex | 0% | undefined | 0/3 |
-| COMPAS | Gaussian Copula | race | 100% | +0.0162 ± 0.0144 | 3/3 |
-| COMPAS | Gaussian Copula | sex | 100% | −0.0343 ± 0.0273 | 3/3 |
-| COMPAS | CTGAN | race | 100% | +0.0156 ± 0.0395 | 2/3 |
-| COMPAS | CTGAN | sex | 100% | +0.0308 ± 0.0173 | 2/3 |
-| COMPAS | TVAE | race | 70% | +0.0389 ± 0.0191 | 0/3 |
-| COMPAS | TVAE | sex | 70% | +0.0270 ± 0.0370 | 0/3 |
+- **P1 — Distributional invariance** (Jensen–Shannon divergence per
+  attribute; aggregate threshold 0.10). Rejects out-of-distribution
+  batches.
+- **P2 — Fairness delta audit** (equal opportunity gap pre- vs post-
+  synthesis on every protected attribute). Rejects batches that worsen
+  any protected attribute.
 
-The three generators behave differently on the same data. Gaussian Copula
-passes P1 trivially but fails P2. CTGAN passes P1 at moderate rates with mixed
-P2 outcomes. TVAE fails P1 entirely on Adult and partially on COMPAS but
-improves fairness when its batches do survive P1. **No single protocol detects
-all failures: each generator requires a different combination of P1–P4 checks
-to be governable.** Across all 18 (dataset, generator, seed) configurations
-reported in the table, the pipeline detected each generator's distinct
-failure mode and either quarantined batches via P1 (TVAE) or executed
-rollback via P2 (Gaussian Copula and CTGAN on the regressing attributes).
+Record-level integrity invariants that held trivially across these runs:
 
-## Multi-seed robustness with Gaussian Copula (10 seeds, primary generator)
+- **P3 — Cryptographic provenance** (SHA-256 over `model_id || batch_id
+  || record_idx || seed || timestamp`). Guards against undetectable
+  injection of synthetic records.
+- **P4 — Domain plausibility** (callable predicates per dataset).
+  Guards against impossible records (age = −3, education-num = 99).
 
-| Dataset | Attribute | P2 delta (mean ± std) | Seeds with P2 < 0 | Rollback |
-|---|---|---|---|---|
-| Adult | race | −0.1273 ± 0.0191 | 10 / 10 | 10 / 10 |
-| Adult | sex | −0.0330 ± 0.0135 | 10 / 10 | 10 / 10 |
-| COMPAS | race | −0.0014 ± 0.0162 | 6 / 10 | 10 / 10 |
-| COMPAS | sex | −0.0290 ± 0.0159 | 10 / 10 | 10 / 10 |
+P3 and P4 passed at 100% across every run in this evaluation, which is
+the expected behaviour for well-behaved generators on benchmark data.
+Their role is to surface pathologies that did not occur here; the
+empirical signal in the multi-seed and multi-generator sweeps is carried
+by P1 and P2.
 
-**Central empirical finding.** Across both datasets and ten random seeds (40
-attribute-seed observations), naive distributional synthesis passed P1
-(Jensen–Shannon divergence 0.003–0.080, all under the 0.10 threshold) but
-produced non-positive P2 deltas in 36 of 40 cases. The pipeline detected each
-regression, executed automatic rollback per the Fairness–Synthesis conflict
-resolution protocol, and recorded the authorization in the provenance graph
-in all 20 (dataset, seed) configurations. P1 alone is insufficient as a single
-check; the four-protocol structure is what makes synthesis auditable.
+### The three conflict-resolution protocols
 
-## Layer evaluation criteria
+- **Fairness–Synthesis** (exercised in this evaluation). Triggered when
+  P2 fails: corpus reverts to the Integrity-validated baseline and the
+  rollback decision is logged with role + rationale. Fires in all 20
+  (dataset, seed) configurations of the multi-seed sweep.
+- **Integrity–Fairness** (specified; not triggered in this evaluation).
+  Triggered when integrity exclusions disproportionately remove an
+  underrepresented group. Adult and COMPAS happened to have uniform
+  exclusion rates across protected groups, so this protocol's escalation
+  path is specified but was not exercised in our runs.
+- **Provenance–Integrity** (specified; not triggered in this evaluation).
+  Triggered when schema migrations would invalidate earlier lineage.
+  No schema migration occurred during these runs.
 
-| Layer | Primary metric | Acceptability |
-|---|---|---|
-| Integrity | structural completeness, semantic consistency, demographic coverage parity | no protected group's exclusion rate > 2× majority |
-| Fairness | demographic parity gap, equal opportunity gap, counterfactual fairness | EO gap ≤ 0.10 per group |
-| Synthesis | P1 (JS div), P2 (delta), P3 (hash verify), P4 (plausibility) | P1 ≤ 0.10; P2 ≥ 0 for all groups; P3 = 100 %; P4 ≥ 95 % |
-| Provenance | lineage completeness, decision coverage, traceability depth | all transformations and all escalations documented |
+## Headline empirical results
 
-## Provenance graph schema
+### Multi-seed Gaussian Copula sweep (10 seeds × 2 datasets)
 
-Each node records: `node_id`, `event_type`, `timestamp`, `layer_origin`,
-`actor_id`, `input_refs`, `output_refs`, `decision_rationale`, `flags`,
-`schema_version`. SYNTHESIS nodes additionally carry `generation_params`
-(model identifier, seed, privacy budget) and `validation_results` (P1–P4
-outcomes). See `src/provenance.py::ProvenanceNode`.
+| Dataset | Attribute | P2 Δ (mean ± std)     | Seeds with P2 Δ < 0 |
+| ------- | --------- | ---------------------- | ------------------- |
+| Adult   | race      | −0.1273 ± 0.0191       | 10/10               |
+| Adult   | sex       | −0.0330 ± 0.0135       | 10/10               |
+| COMPAS  | race      | −0.0014 ± 0.0162       | 6/10                |
+| COMPAS  | sex       | −0.0290 ± 0.0159       | 10/10               |
 
-## Citing this work
+Rollback fired in 20/20 configurations. Detailed per-run logs are in
+`results/tables/multi_seed_*.csv`.
 
-Please cite both the article and the software:
+### Multi-generator panel (CTGAN + TVAE at 3 seeds × 2 datasets)
+
+| Dataset | Generator | P1 pass rate | Rollback |
+| ------- | --------- | ------------ | -------- |
+| Adult   | CTGAN     | 75%          | 3/3      |
+| Adult   | TVAE      | 0%           | 0/3 (P1 blocked) |
+| COMPAS  | CTGAN     | 100%         | 2/3      |
+| COMPAS  | TVAE      | 70%          | **0/3 (synthesis accepted)** |
+
+TVAE on COMPAS is the only configuration of the 32 where the
+conflict-resolution protocol *accepted* synthesis. The new §3.8 of the
+manuscript discusses this case in detail.
+
+### Classifier ablation (added in R1)
+
+Random Forest replaced with Logistic Regression on seeds {13, 42, 137}:
+the sign pattern of P2 deltas survives the swap on all four (dataset,
+attribute) cells. Magnitudes differ, qualitative pattern is unchanged.
+Raw data in `results/tables/classifier_ablation_raw.csv`.
+
+## Citation
+
+If you use this code or the manuscript, please cite both. The article
+metadata (currently under revision at *AI and Ethics*) and the software
+metadata are in [`CITATION.cff`](./CITATION.cff). GitHub renders that
+file as a copy-to-clipboard citation widget in the sidebar.
+
+In plain BibTeX, for the software:
 
 ```bibtex
-@article{CavalcantiPereira2026DCTP,
-  author  = {Cavalcanti Pereira, Carlos Diego},
-  title   = {A Data-Centric Trust Pipeline: An Empirical Framework for
-             Trustworthy AI in Sensitive Domains},
-  journal = {Patterns},
-  year    = {2026},
-  note    = {Under submission}
-}
-
-@software{CavalcantiPereira2026DCTPSoftware,
+@software{CavalcantiPereira2026DCTP,
   author  = {Cavalcanti Pereira, Carlos Diego},
   title   = {Data-Centric Trust Pipeline: Reference Implementation},
   year    = {2026},
   url     = {https://github.com/cdiegocom/dctp},
-  version = {1.0.0}
+  version = {1.1.0},
+  license = {MIT}
 }
 ```
 
+For the manuscript itself, please cite the eventual journal version
+once accepted. In the meantime, the working reference is the preprint
+inside this repository (`main_aie.pdf`).
+
 ## License
 
-Code is released under the MIT license. Bundled datasets are redistributed
-under their original licenses (see LICENSE for details).
+MIT — see [LICENSE](./LICENSE).
 
-## Contact
+## Author
 
-Carlos Diego Cavalcanti Pereira — Massachusetts Institute of Technology. cdiego@mit.edu
+**Carlos Diego Cavalcanti Pereira**
+Sloan School of Management, MIT (Visiting Fellows Program)
+CESAR School, Recife, Brazil
+ORCID: [0009-0005-2003-8713](https://orcid.org/0009-0005-2003-8713)
+Email: [cdiego@mit.edu](mailto:cdiego@mit.edu)
+
+## Acknowledgments
+
+This research was conducted as part of the author's extended research
+and residency activities at the Sloan School of Management within the
+Visiting Fellows Program at MIT, with the support of the CESAR School
+research environment. Thanks to the two anonymous reviewers and the
+editors of *AI and Ethics* for the constructive feedback that materially
+improved this work.
